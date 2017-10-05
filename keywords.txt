@@ -12,9 +12,10 @@ USBKeyboard		KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 
-sendKey			KEYWORD2
-write			KEYWORD2
-update			KEYWORD2
+sendKey					KEYWORD2
+write					KEYWORD2
+update					KEYWORD2
+isCapsLockActivated		KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

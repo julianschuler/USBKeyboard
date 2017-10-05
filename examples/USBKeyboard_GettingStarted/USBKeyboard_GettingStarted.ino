@@ -9,6 +9,9 @@ bool lastState = LOW;
 
 
 void setup() {
+	/* USB timing has to be exact, therefore deactivate Timer0 interrupt */
+	TIMSK0 = 0;
+	
 	/* set the button pin as input and activate the internal pullup resistor */
 	pinMode(BUTTON_PIN, INPUT_PULLUP);
 }
@@ -45,7 +48,7 @@ void loop() {
 		lastState = HIGH;
 	}
 	
-	/* USB timing has to be exact, this way the ISR for Timer0 is deactivated
-	 * and delay() and millis() won't work, call delayMicroseconds() instead */
+	/* due to the deactivation of the Timer0 interrupt, delay()
+	 * and millis() won't work, call delayMicroseconds() instead */
 	delayMicroseconds(20000);
 }

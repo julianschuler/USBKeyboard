@@ -51,7 +51,6 @@ USBKeyboard::USBKeyboard () {
 	cli();
 	USBOUT &= ~USBMASK;
 	USBDDR &= ~USBMASK;
-	TIMSK0 = 0;
 	usbDeviceDisconnect();
 	delayMicroseconds(250000);
 	usbDeviceConnect();
