@@ -51,6 +51,7 @@ USBKeyboard::USBKeyboard () {
 	cli();
 	USBOUT &= ~USBMASK;
 	USBDDR &= ~USBMASK;
+	TIMSK0 = 0;
 	usbDeviceDisconnect();
 	delayMicroseconds(250000);
 	usbDeviceConnect();
@@ -104,12 +105,8 @@ uint8_t USBKeyboard::ASCII_to_keycode(char ascii, bool ignoreCapsLock) {
 				keycode = 0x1F;
 				break;
 			case '#':
-				#if US_LAYOUT
 				modifier ^= _BV(1); // hold shift
 				keycode = 0x20;
-				#else
-				keycode = 0x32;
-				#endif
 				break;
 			case '$':
 				modifier ^= _BV(1); // hold shift
@@ -173,11 +170,7 @@ uint8_t USBKeyboard::ASCII_to_keycode(char ascii, bool ignoreCapsLock) {
 				modifier = _BV(1); // hold shift
 				// fall through
 			case '\\':
-				#if US_LAYOUT
 				keycode = 0x31;
-				#else
-				keycode = 0x64;
-				#endif
 				break;
 			case ':':
 				modifier = _BV(1); // hold shift
@@ -291,12 +284,6 @@ usbMsgLen_t usbFunctionWrite(uint8_t * data, uchar len) {
 		return 1;
 	else
 		LED_state = data[0];
-	
-	// LED state changed
-	if(LED_state & 2)
-		PORTB |= 1 << 0; // LED on
-	else
-		PORTB &= ~(1 << 0); // LED off
 	
 	return 1; // Data read, not expecting more
 }

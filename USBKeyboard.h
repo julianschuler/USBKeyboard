@@ -1,10 +1,12 @@
-/*********************************************************************************************
+/**********************************************************************************************
  * 
- * This library adds USB keyboard functionality for the Arduino IDE, so Arduinos and and other AVRs 
- * It is based the V-USB code by Objective Developement (https://www.obdev.at/products/vusb/) and under 
- * the same license (GNU v3, see LICENSE.txt).
+ * This library for the Arduino IDE adds HID USB keyboard functionality to your projects, it
+ * allows Arduinos and other AVRs to act as an HID USB Device. This way no drivers have to be
+ * installed, the keyboard will work with every PC and OS.
+ * It is based the V-USB code by Objective Developement (https://www.obdev.at/products/vusb/)
+ * and under the same license (GNU GPLv3, see LICENSE.txt).
  * 
- *********************************************************************/
+ *********************************************************************************************/
 
 #ifndef __USBKeyboard_h__
 #define __USBKeyboard_h__
@@ -14,9 +16,6 @@
 #include <string.h>
 #include <usbdrv.h>
 #include <Arduino.h>
-
-/* change it to 1, if you usually use a Keyboard with an US layout*/
-#define US_LAYOUT 0
 
 
 /* global variables */
@@ -30,7 +29,7 @@ static uint8_t blink_count = 0; // keep track of how many times caps lock have t
 class USBKeyboard : public Print {
 public: /*#################### PUBLIC FUNCTIONS ####################*/
 	/*******************************************************
-	 * constructor, call it when initializing the library
+	 * Constructor, call it when initializing the library
 	 ******************************************************/
 	USBKeyboard();
 	
@@ -46,8 +45,13 @@ public: /*#################### PUBLIC FUNCTIONS ####################*/
 	 * Type a single char to the USB host
 	 ******************************************************/
 	virtual size_t write(uint8_t ascii) {write(ascii, false);}
-	//void write(char ascii) {write(ascii, false);}
 	void write(char ascii, bool ignoreCapsLock);
+	
+	
+	/*******************************************************
+	 * Get the state of Caps Lock
+	 ******************************************************/
+	bool isCapsLockActivated() {return (LED_state & 2);}
 	
 	
 private: /*################### PRIVATE FUNCTIONS ###################*/
@@ -59,7 +63,7 @@ private: /*################### PRIVATE FUNCTIONS ###################*/
 	
 	
 	/*******************************************************
-	 * send the keyboard report
+	 * Send the keyboard report
 	 ******************************************************/
 	void send_report(uint8_t keycode);
 };
