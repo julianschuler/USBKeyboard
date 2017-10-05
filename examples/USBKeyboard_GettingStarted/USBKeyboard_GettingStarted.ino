@@ -16,7 +16,7 @@ void setup() {
 
 void loop() {
 	/* call this function at least every 20ms, otherwise an USB timeout will occur */
-	UsbKeyboard.update();
+	mKeyboard.update();
 	
 	/* check if button is pressed */
 	if (digitalRead(BUTTON_PIN) == LOW) {
@@ -28,10 +28,10 @@ void loop() {
 			
 			/* get the state of Caps Lock */
 			if (mKeyboard.isCapsLockActivated()) {
-				mKeyboard.print("Caps Lock is activated: ")
+				mKeyboard.print("Caps Lock is activated: ");
 			}
 			else {
-				mKeyboard.print("Caps Lock is deactivated: ")
+				mKeyboard.print("Caps Lock is deactivated: ");
 			}
 			
 			/* igore the state of Caps Lock to show whether Caps Lock is activated or not*/
