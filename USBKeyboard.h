@@ -22,7 +22,7 @@
 static uint8_t modifier = 0x00;
 static uint8_t idle_rate = 500 / 4; // see HID1_11.pdf sect 7.2.4
 static uint8_t protocol_version = 0; // see HID1_11.pdf sect 7.2.6
-static uint8_t LED_state = 0; // see HID1_11.pdf appendix B section 1
+volatile static uint8_t LED_state = 0; // see HID1_11.pdf appendix B section 1
 static uint8_t blink_count = 0; // keep track of how many times caps lock have toggled
 
 
@@ -51,7 +51,7 @@ public: /*#################### PUBLIC FUNCTIONS ####################*/
 	/*******************************************************
 	 * Get the state of Caps Lock
 	 ******************************************************/
-	bool isCapsLockActivated() {return (LED_state & 2);}
+	bool isCapsLockActivated();
 	
 	
 private: /*################### PRIVATE FUNCTIONS ###################*/

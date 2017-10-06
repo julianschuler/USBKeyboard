@@ -73,10 +73,15 @@ void USBKeyboard::write(char ascii, bool ignoreCapsLock) {
 }
 
 
+bool USBKeyboard::isCapsLockActivated() {
+	 return (LED_state & 2);
+}
+
+
 /* translate ASCII char to keyboard report */
 uint8_t USBKeyboard::ASCII_to_keycode(char ascii, bool ignoreCapsLock) {
 	uint8_t keycode = 0x00; //default value, if char is not found
-	modifier = (_BV(1) & LED_state); // invert shift if Caps Lock is activated
+	modifier = (!ignoreCapsLock << 1 & LED_state); // invert shift if Caps Lock is activated
 	
 	if (ascii >= 'A' && ascii <= 'Z') {
 		keycode = 0x04 + ascii - 'A'; // set letter
@@ -283,6 +288,13 @@ usbMsgLen_t usbFunctionWrite(uint8_t * data, uchar len) {
 		return 1;
 	else
 		LED_state = data[0];
+	
+	/*if (LED_state & 2) {
+		PORTB |= 1;
+	}
+	else {
+		PORTB &= ~1;
+	}*/
 	
 	return 1; // Data read, not expecting more
 }
