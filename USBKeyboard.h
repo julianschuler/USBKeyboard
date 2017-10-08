@@ -17,13 +17,17 @@
 #include <usbdrv.h>
 #include <Arduino.h>
 
+#define US 0
+#define DE 1
+#define KEYBOARD_LAYOUT DE
+
 
 /* global variables */
 static uint8_t modifier = 0x00;
-static uint8_t idle_rate = 500 / 4; // see HID1_11.pdf sect 7.2.4
-static uint8_t protocol_version = 0; // see HID1_11.pdf sect 7.2.6
-volatile static uint8_t LED_state = 0; // see HID1_11.pdf appendix B section 1
-static uint8_t blink_count = 0; // keep track of how many times caps lock have toggled
+static uint8_t idle_rate = 500 / 4; /* see HID1_11.pdf sect 7.2.4 */
+static uint8_t protocol_version = 0; /* see HID1_11.pdf sect 7.2.6 */
+volatile static uint8_t LED_states = 0; /* see HID1_11.pdf appendix B section 1 */
+volatile static uint8_t toggle_counter = 0; /* keep track of how many times caps lock have toggled */
 
 
 class USBKeyboard : public Print {
@@ -54,6 +58,18 @@ public: /*#################### PUBLIC FUNCTIONS ####################*/
 	bool isCapsLockActivated();
 	
 	
+	/*******************************************************
+	 * Get how often Caps Lock was toggled
+	 ******************************************************/
+	uint8_t getCapsLockToggleCount();
+	
+	
+	/*******************************************************
+	 * Reset the Caps Lock toggle counter
+	 ******************************************************/
+	void resetCapsLockToggleCount();
+	
+	
 private: /*################### PRIVATE FUNCTIONS ###################*/
 	/*******************************************************
 	 * Translate ASCII to appropriate keyboard report,
@@ -68,4 +84,4 @@ private: /*################### PRIVATE FUNCTIONS ###################*/
 	void send_report(uint8_t keycode);
 };
 
-#endif // __USBKeyboard_h__
+#endif /* __USBKeyboard_h__ */

@@ -10,41 +10,42 @@
 
 /* set USB HID report descriptor for boot protocol keyboard */
 PROGMEM const char usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH] = {
-	0x05, 0x01,					// USAGE_PAGE (Generic Desktop)
-	0x09, 0x06,					// USAGE (Keyboard)
-	0xa1, 0x01,					// COLLECTION (Application)
-	0x75, 0x01,					//   REPORT_SIZE (1)
-	0x95, 0x08,					//   REPORT_COUNT (8)
-	0x05, 0x07,					//   USAGE_PAGE (Keyboard)(Key Codes)
-	0x19, 0xe0,					//   USAGE_MINIMUM (Keyboard LeftControl)(224)
-	0x29, 0xe7,					//   USAGE_MAXIMUM (Keyboard Right GUI)(231)
-	0x15, 0x00,					//   LOGICAL_MINIMUM (0)
-	0x25, 0x01,					//   LOGICAL_MAXIMUM (1)
-	0x81, 0x02,					//   INPUT (Data,Var,Abs) ; Modifier byte
-	0x95, 0x01,					//   REPORT_COUNT (1)
-	0x75, 0x08,					//   REPORT_SIZE (8)
-	0x81, 0x03,					//   INPUT (Cnst,Var,Abs) ; Reserved byte
-	0x95, 0x05,					//   REPORT_COUNT (5)
-	0x75, 0x01,					//   REPORT_SIZE (1)
-	0x05, 0x08,					//   USAGE_PAGE (LEDs)
-	0x19, 0x01,					//   USAGE_MINIMUM (Num Lock)
-	0x29, 0x05,					//   USAGE_MAXIMUM (Kana)
-	0x91, 0x02,					//   OUTPUT (Data,Var,Abs) ; LED report
-	0x95, 0x01,					//   REPORT_COUNT (1)
-	0x75, 0x03,					//   REPORT_SIZE (3)
-	0x91, 0x03,					//   OUTPUT (Cnst,Var,Abs) ; LED report padding
-	0x95, 0x06,					//   REPORT_COUNT (6)
-	0x75, 0x08,					//   REPORT_SIZE (8)
-	0x15, 0x00,					//   LOGICAL_MINIMUM (0)
-	0x25, 0x65,					//   LOGICAL_MAXIMUM (101)
-	0x05, 0x07,					//   USAGE_PAGE (Keyboard)(Key Codes)
-	0x19, 0x00,					//   USAGE_MINIMUM (Reserved (no event indicated))(0)
-	0x29, 0x65,					//   USAGE_MAXIMUM (Keyboard Application)(101)
-	0x81, 0x00,					//   INPUT (Data,Ary,Abs)
-	0xc0						// END_COLLECTION
+	0x05, 0x01,			/* USAGE_PAGE (Generic Desktop)						*/
+	0x09, 0x06,			/* USAGE (Keyboard)									*/
+	0xa1, 0x01,			/* COLLECTION (Application)							*/
+	0x75, 0x01,			/* REPORT_SIZE (1)									*/
+	0x95, 0x08,			/* REPORT_COUNT (8)									*/
+	0x05, 0x07,			/* USAGE_PAGE (Keyboard)(Key Codes)					*/
+	0x19, 0xe0,			/* USAGE_MINIMUM (Keyboard LeftControl)(224)		*/
+	0x29, 0xe7,			/* USAGE_MAXIMUM (Keyboard Right GUI)(231)			*/
+	0x15, 0x00,			/* LOGICAL_MINIMUM (0)								*/
+	0x25, 0x01,			/* LOGICAL_MAXIMUM (1)								*/
+	0x81, 0x02,			/* INPUT (Data,Var,Abs) ; Modifier byte				*/
+	0x95, 0x01,			/* REPORT_COUNT (1)									*/
+	0x75, 0x08,			/* REPORT_SIZE (8)									*/
+	0x81, 0x03,			/* INPUT (Cnst,Var,Abs) ; Reserved byte				*/
+	0x95, 0x05,			/* REPORT_COUNT (5)									*/
+	0x75, 0x01,			/* REPORT_SIZE (1)									*/
+	0x05, 0x08,			/* USAGE_PAGE (LEDs)								*/
+	0x19, 0x01,			/* USAGE_MINIMUM (Num Lock)							*/
+	0x29, 0x05,			/* USAGE_MAXIMUM (Kana)								*/
+	0x91, 0x02,			/* OUTPUT (Data,Var,Abs) ; LED report				*/
+	0x95, 0x01,			/* REPORT_COUNT (1)									*/
+	0x75, 0x03,			/* REPORT_SIZE (3)									*/
+	0x91, 0x03,			/* OUTPUT (Cnst,Var,Abs) ; LED report padding		*/
+	0x95, 0x06,			/* REPORT_COUNT (6)									*/
+	0x75, 0x08,			/* REPORT_SIZE (8)									*/
+	0x15, 0x00,			/* LOGICAL_MINIMUM (0)								*/
+	0x25, 0x65,			/* LOGICAL_MAXIMUM (101)							*/
+	0x05, 0x07,			/* USAGE_PAGE (Keyboard)(Key Codes)					*/
+	0x19, 0x00,			/* USAGE_MINIMUM (Reserved (no event indicated))(0)	*/
+	0x29, 0x65,			/* USAGE_MAXIMUM (Keyboard Application)(101)		*/
+	0x81, 0x00,			/* INPUT (Data,Ary,Abs)								*/
+	0xc0				/*  END_COLLECTION									*/
 };
 
 
+/*##################################### PUBLIC FUNCTIONS #####################################*/
 
 /* constructor */
 USBKeyboard::USBKeyboard () {
@@ -74,156 +75,158 @@ void USBKeyboard::write(char ascii, bool ignoreCapsLock) {
 
 
 bool USBKeyboard::isCapsLockActivated() {
-	 return (LED_state & 2);
+	 return (LED_states & 2);
 }
 
 
+uint8_t USBKeyboard::getCapsLockToggleCount() {
+	return toggle_counter;
+}
+
+
+void USBKeyboard::resetCapsLockToggleCount() {
+	toggle_counter = 0;
+}
+
+
+/*#################################### PRIVATE FUNCTIONS #####################################*/
+
 /* translate ASCII char to keyboard report */
 uint8_t USBKeyboard::ASCII_to_keycode(char ascii, bool ignoreCapsLock) {
-	uint8_t keycode = 0x00; //default value, if char is not found
-	modifier = (!ignoreCapsLock << 1 & LED_state); // invert shift if Caps Lock is activated
+	modifier = (!ignoreCapsLock << 1 & LED_states); /* invert shift if Caps Lock is activated */
 	
 	if (ascii >= 'A' && ascii <= 'Z') {
-		keycode = 0x04 + ascii - 'A'; // set letter
-		modifier ^= _BV(1); // hold shift
+		#if (KEYBOARD_LAYOUT == DE)
+			/* flip Y and Z key */
+			if (ascii == 'Y')
+				return 0x04 + 'Z' - 'A';
+			else if (ascii == 'Z')
+				return 0x04 + 'Y' - 'A';
+		#endif
+		modifier ^= _BV(1); /* hold shift */
+		return 0x04 + ascii - 'A'; /* set letter */
 	}
 	else if (ascii >= 'a' && ascii <= 'z') {
-		keycode = 0x04 + ascii - 'a'; // set letter
+		#if (KEYBOARD_LAYOUT == DE)
+			/* flip Y and Z key */
+			if (ascii == 'y')
+				return 0x04 + 'z' - 'a';
+			else if (ascii == 'z')
+				return 0x04 + 'y' - 'a';
+		#endif
+		return 0x04 + ascii - 'a'; /* set letter */
 	}
 	else if (ascii >= '0' && ascii <= '9') {
 		if (ascii == '0') {
-			keycode = 0x27;
+			return 0x27;
 		}
 		else {
-			keycode = 0x1E + ascii - '1'; 
+			return 0x1E + ascii - '1'; 
 		}
 	}
 	else {
 		switch (ascii) {
 			case '!':
-				modifier ^= _BV(1); // hold shift
-				keycode = 0x1E;
-				break;
+				modifier ^= _BV(1); /* hold shift */
+				return 0x1E;
 			case '@':
-				modifier ^= _BV(1); // hold shift
-				keycode = 0x1F;
-				break;
+				modifier ^= _BV(1); /* hold shift */
+				return 0x1F;
 			case '#':
-				modifier ^= _BV(1); // hold shift
-				keycode = 0x20;
-				break;
+				modifier ^= _BV(1); /* hold shift */
+				return 0x20;
 			case '$':
-				modifier ^= _BV(1); // hold shift
-				keycode = 0x21;
-				break;
+				modifier ^= _BV(1); /* hold shift */
+				return 0x21;
 			case '%':
-				modifier ^= _BV(1); // hold shift
-				keycode = 0x22;
-				break;
+				modifier ^= _BV(1); /* hold shift */
+				return 0x22;
 			case '^':
-				modifier ^= _BV(1); // hold shift
-				keycode = 0x23;
-				break;
+				modifier ^= _BV(1); /* hold shift */
+				return 0x23;
 			case '&':
-				modifier ^= _BV(1); // hold shift
-				keycode = 0x24;
-				break;
+				modifier ^= _BV(1); /* hold shift */
+				return 0x24;
 			case '*':
-				modifier ^= _BV(1); // hold shift
-				keycode = 0x25;
-				break;
+				modifier ^= _BV(1); /* hold shift */
+				return 0x25;
 			case '(':
-				modifier ^= _BV(1); // hold shift
-				keycode = 0x26;
+				modifier ^= _BV(1); /* hold shift */
+				return 0x26;
 				break;
 			case ')':
-				modifier ^= _BV(1); // hold shift
-				keycode = 0x27;
-				break;
+				modifier ^= _BV(1); /* hold shift */
+				return 0x27;
 			case '~':
-				modifier ^= _BV(1); // hold shift
-				// fall through
+				modifier ^= _BV(1); /* hold shift */
+				/* fall through */
 			case '`':
-				keycode = 0x35;
-				break;
+				return 0x35;
 			case '_':
-				modifier ^= _BV(1); // hold shift
-				// fall through
+				modifier ^= _BV(1); /* hold shift */
+				/* fall through */
 			case '-':
-				keycode = 0x2D;
-				break;
+				return 0x2D;
 			case '+':
-				modifier ^= _BV(1); // hold shift
-				// fall through
+				modifier ^= _BV(1); /* hold shift */
+				/* fall through */
 			case '=':
-				keycode = 0x2E;
-				break;
+				return 0x2E;
 			case '{':
-				modifier ^= _BV(1); // hold shift
-				// fall through
+				modifier ^= _BV(1); /* hold shift */
+				/* fall through */
 			case '[':
-				keycode = 0x2F;
-				break;
+				return 0x2F;
 			case '}':
-				modifier ^= _BV(1); // hold shift
-				// fall through
+				modifier ^= _BV(1); /* hold shift */
+				/* fall through */
 			case ']':
-				keycode = 0x30;
-				break;
+				return 0x30;
 			case '|':
-				modifier = _BV(1); // hold shift
-				// fall through
+				modifier = _BV(1); /* hold shift */
+				/* fall through */
 			case '\\':
-				keycode = 0x31;
-				break;
+				return 0x31;
 			case ':':
-				modifier = _BV(1); // hold shift
-				// fall through
+				modifier = _BV(1); /* hold shift */
+				/* fall through */
 			case ';':
-				keycode = 0x33;
-				break;
+				return 0x33;
 			case '"':
-				modifier = _BV(1); // hold shift
-				// fall through
+				modifier = _BV(1); /* hold shift */
+				/* fall through */
 			case '\'':
-				keycode = 0x34;
-				break;
+				return 0x34;
 			case '<':
-				modifier = _BV(1); // hold shift
-				// fall through
+				modifier = _BV(1); /* hold shift */
+				/* fall through */
 			case ',':
-				keycode = 0x36;
-				break;
+				return 0x36;
 			case '>':
-				modifier ^= _BV(1); // hold shift
-				// fall through
+				modifier ^= _BV(1); /* hold shift */
+				/* fall through */
 			case '.':
-				keycode = 0x37;
-				break;
+				return 0x37;
 			case '?':
-				modifier ^= _BV(1); // hold shift
-				// fall through
+				modifier ^= _BV(1); /* hold shift */
+				/* fall through */
 			case '/':
-				keycode = 0x38;
-				break;
+				return 0x38;
 			case ' ':
-				keycode = 0x2C;
-				break;
+				return 0x2C;
 			case '\t':
-				keycode = 0x2B;
-				break;
+				return 0x2B;
 			case '\n':
-				keycode = 0x28;
-				break;
+				return 0x28;
 		}
 	}
-	return keycode;
+	return 0; /* char not found */
 }
 
 
 /* send the keyoard report */
 void USBKeyboard::send_report(uint8_t keycode) {
-	// perform usb background tasks until the report can be sent, then send it
+	/* perform usb background tasks until the report can be sent, then send it */
 	while (!usbInterruptIsReady()) usbPoll();
 	uint8_t report_buffer[8] = {modifier, 0, keycode, 0, 0, 0, 0, 0};
 	if (keycode == 0x28) {
@@ -237,64 +240,54 @@ void USBKeyboard::send_report(uint8_t keycode) {
 		usbSetInterrupt(report_buffer, sizeof(report_buffer));
 		report_buffer[2] = keycode;
 	}
-	usbSetInterrupt(report_buffer, sizeof(report_buffer)); // send
-	// see http://vusb.wikidot.com/driver-api
+	usbSetInterrupt(report_buffer, sizeof(report_buffer)); /* send */
+	/* see http://vusb.wikidot.com/driver-api */
 }
 
 
 /* declare the USB device as HID keyboard */
 usbMsgLen_t usbFunctionSetup(uint8_t data[8]) {
-	// see HID1_11.pdf sect 7.2 and http://vusb.wikidot.com/driver-api
+	/* see HID1_11.pdf sect 7.2 and http://vusb.wikidot.com/driver-api */
 	usbRequest_t *rq = (void *)data;
-
+	
 	if ((rq->bmRequestType & USBRQ_TYPE_MASK) != USBRQ_TYPE_CLASS)
-		return 0; // ignore request if it's not a class specific request
-
-	// see HID1_11.pdf sect 7.2
+		return 0; /* ignore request if it's not a class specific request */
+	
+	/* see HID1_11.pdf sect 7.2 */
 	switch (rq->bRequest) {
 		case USBRQ_HID_GET_IDLE:
-			usbMsgPtr = &idle_rate; // send data starting from this byte
-			return 1; // send 1 byte
+			usbMsgPtr = &idle_rate; /* send data starting from this byte */
+			return 1; /* send 1 byte */
 		case USBRQ_HID_SET_IDLE:
-			idle_rate = rq->wValue.bytes[1]; // read in idle rate
-			return 0; // send nothing
+			idle_rate = rq->wValue.bytes[1]; /* read in idle rate */
+			return 0; /* send nothing */
 		case USBRQ_HID_GET_PROTOCOL:
-			usbMsgPtr = &protocol_version; // send data starting from this byte
-			return 1; // send 1 byte
+			usbMsgPtr = &protocol_version; /* send data starting from this byte */
+			return 1; /* send 1 byte */
 		case USBRQ_HID_SET_PROTOCOL:
 			protocol_version = rq->wValue.bytes[1];
-			return 0; // send nothing
+			return 0; /* send nothing */
 		case USBRQ_HID_SET_REPORT:
-			if (rq->wLength.word == 1) { // check data is available
-				// 1 byte, we don't check report type (it can only be output or feature)
-				// we never implemented "feature" reports so it can't be feature
-				// so assume "output" reports
-				// this means set LED status
-				// since it's the only one in the descriptor
-				return USB_NO_MSG; // send nothing but call usbFunctionWrite
+			if (rq->wLength.word == 1) { /* check data is available
+				1 byte, we don't check report type (it can only be output or feature)
+				we never implemented "feature" reports so it can't be feature
+				so assume "output" reports
+				this means set LED status
+				since it's the only one in the descriptor */
+				return USB_NO_MSG; /* send nothing but call usbFunctionWrite */
 			}
-			else { // no data or do not understand data, ignore
-				return 0; // send nothing
-			}
-		default: // do not understand data, ignore
-			return 0; // send nothing
+		default: /* do not understand data, ignore */
+			return 0; /* send nothing */
 	}
 }
 
 
 /* detect LED states (Caps Lock, Num Lock, Scroll Lcok) */
-usbMsgLen_t usbFunctionWrite(uint8_t * data, uchar len) { 
-	if (data[0] == LED_state)
+usbMsgLen_t usbFunctionWrite(uint8_t * data, uchar len) {
+	if (data[0] == LED_states) /* return, if no LED states have changed */
 		return 1;
-	else
-		LED_state = data[0];
-	
-	/*if (LED_state & 2) {
-		PORTB |= 1;
-	}
-	else {
-		PORTB &= ~1;
-	}*/
-	
-	return 1; // Data read, not expecting more
+	if (data[0] ^ LED_states & 2) /* increase counter, if Caps Lock state changed */
+		toggle_counter++;
+	LED_states = data[0];
+	return 1; /* Data read, not expecting more */
 }
