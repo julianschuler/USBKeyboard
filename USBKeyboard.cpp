@@ -45,6 +45,123 @@ PROGMEM const char usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH] 
 };
 
 
+const uint8_t US_keycodes[96] = {
+	0x2C,			// Space
+	0x1E,			// !
+	0x34,			// "
+	0x20,			// #
+	0x21,			// $
+	0x22,			// %
+	0x24,			// &
+	0x34,			// '
+	0x26,			// (
+	0x27,			// )
+	0x25,			// *
+	0x2E,			// +
+	0x36,			// ,
+	0x2D,			// -
+	0x37,			// .
+	0x38,			// /
+	0x27,			// 0
+	0x1E,			// 1
+	0x1F,			// 2
+	0x20,			// 3
+	0x21,			// 4
+	0x22,			// 5
+	0x23,			// 6
+	0x24,			// 7
+	0x25,			// 8
+	0x26,			// 9
+	0x33,			// :
+	0x33,			// ;
+	0x36,			// <
+	0x2E,			// =
+	0x37,			// >
+	0x38,			// ?
+	0x1F,			// @
+	0x04,			// A
+	0x05,			// B
+	0x06,			// C
+	0x07,			// D
+	0x08,			// E
+	0x09,			// F
+	0x0A,			// G
+	0x0B,			// H
+	0x0C,			// I
+	0x0D,			// J
+	0x0E,			// K
+	0x0F,			// L
+	0x10,			// M
+	0x11,			// N
+	0x12,			// O
+	0x13,			// P
+	0x14,			// Q
+	0x15,			// R
+	0x16,			// S
+	0x17,			// T
+	0x18,			// U
+	0x19,			// V
+	0x1A,			// W
+	0x1B,			// X
+	0x1C,			// Y
+	0x1D,			// Z
+	0x2F,			// [
+	0x31,			//'\'
+	0x30,			// ]
+	0x23,			// ^
+	0x2D,			// _
+	0xC0,			// `
+	0x04,			// a
+	0x05,			// b
+	0x06,			// c
+	0x07,			// d
+	0x08,			// e
+	0x09,			// f
+	0x0A,			// g
+	0x0B,			// h
+	0x0C,			// i
+	0x0D,			// j
+	0x0E,			// k
+	0x0F,			// l
+	0x10,			// m
+	0x11,			// n
+	0x12,			// o
+	0x13,			// p
+	0x14,			// q
+	0x15,			// r
+	0x16,			// s
+	0x17,			// t
+	0x18,			// u
+	0x19,			// v
+	0x1A,			// w
+	0x1B,			// x
+	0x1C,			// y
+	0x1D,			// z
+	0x2F,			// {
+	0x31,			// |
+	0x30,			// }
+	0xC0			// ~
+};
+
+
+const char US_modifiers_shift[12] = {
+	// Bit number:			1	2	3	4	5	6	7	8
+	// --------------------------------------------------
+	B01111111,		//	Space	!	"	#	$	%	&	'
+	B11110000,		//		(	)	*	+	,	-	.	/
+	B00000000,		//		0	1	2	3	4	5	6	7
+	B00101010,		//		8	9	:	;	<	=	>	?
+	B11111111,		//		@	A	B	C	D	E	F	G
+	B11111111,		//		H	I	J	K	L	M	N	O
+	B11111111,		//		P	Q	R	S	T	U	V	W
+	B11100011,		//		X	Y	Z	[	\	]	^	_
+	B00000000,		//		`	a	b	c	d	e	f	g
+	B00000000,		//		h	i	j	k	l	m	n	o
+	B00000000,		//		p	q	r	s	t	u	v	w
+	B00011110		//		x	y	z	{	|	}	~
+};
+
+
 /*##################################### PUBLIC FUNCTIONS #####################################*/
 
 /* constructor */
@@ -93,134 +210,19 @@ void USBKeyboard::resetCapsLockToggleCount() {
 
 /* translate ASCII char to keyboard report */
 uint8_t USBKeyboard::ASCII_to_keycode(char ascii, bool ignoreCapsLock) {
-	modifier = (!ignoreCapsLock << 1 & LED_states); /* invert shift if Caps Lock is activated */
+	/* check if input is ASCII char and translate it to keycode */
+	if (ascii >= ' ' && ascii <= '~') {
+		/* set shift depending on the Caps Lock state and input char */
+		modifier = !ignoreCapsLock << 1 & LED_states ^ ((US_modifiers_shift[ascii/8 - 4] >> (7 - ((ascii - 32) % 8))) << 1 & 2);
+		return US_keycodes[ascii - 32];
+	}
 	
-	if (ascii >= 'A' && ascii <= 'Z') {
-		#if (KEYBOARD_LAYOUT == DE)
-			/* flip Y and Z key */
-			if (ascii == 'Y')
-				return 0x04 + 'Z' - 'A';
-			else if (ascii == 'Z')
-				return 0x04 + 'Y' - 'A';
-		#endif
-		modifier ^= _BV(1); /* hold shift */
-		return 0x04 + ascii - 'A'; /* set letter */
-	}
-	else if (ascii >= 'a' && ascii <= 'z') {
-		#if (KEYBOARD_LAYOUT == DE)
-			/* flip Y and Z key */
-			if (ascii == 'y')
-				return 0x04 + 'z' - 'a';
-			else if (ascii == 'z')
-				return 0x04 + 'y' - 'a';
-		#endif
-		return 0x04 + ascii - 'a'; /* set letter */
-	}
-	else if (ascii >= '0' && ascii <= '9') {
-		if (ascii == '0') {
-			return 0x27;
-		}
-		else {
-			return 0x1E + ascii - '1'; 
-		}
-	}
-	else {
-		switch (ascii) {
-			case '!':
-				modifier ^= _BV(1); /* hold shift */
-				return 0x1E;
-			case '@':
-				modifier ^= _BV(1); /* hold shift */
-				return 0x1F;
-			case '#':
-				modifier ^= _BV(1); /* hold shift */
-				return 0x20;
-			case '$':
-				modifier ^= _BV(1); /* hold shift */
-				return 0x21;
-			case '%':
-				modifier ^= _BV(1); /* hold shift */
-				return 0x22;
-			case '^':
-				modifier ^= _BV(1); /* hold shift */
-				return 0x23;
-			case '&':
-				modifier ^= _BV(1); /* hold shift */
-				return 0x24;
-			case '*':
-				modifier ^= _BV(1); /* hold shift */
-				return 0x25;
-			case '(':
-				modifier ^= _BV(1); /* hold shift */
-				return 0x26;
-				break;
-			case ')':
-				modifier ^= _BV(1); /* hold shift */
-				return 0x27;
-			case '~':
-				modifier ^= _BV(1); /* hold shift */
-				/* fall through */
-			case '`':
-				return 0x35;
-			case '_':
-				modifier ^= _BV(1); /* hold shift */
-				/* fall through */
-			case '-':
-				return 0x2D;
-			case '+':
-				modifier ^= _BV(1); /* hold shift */
-				/* fall through */
-			case '=':
-				return 0x2E;
-			case '{':
-				modifier ^= _BV(1); /* hold shift */
-				/* fall through */
-			case '[':
-				return 0x2F;
-			case '}':
-				modifier ^= _BV(1); /* hold shift */
-				/* fall through */
-			case ']':
-				return 0x30;
-			case '|':
-				modifier = _BV(1); /* hold shift */
-				/* fall through */
-			case '\\':
-				return 0x31;
-			case ':':
-				modifier = _BV(1); /* hold shift */
-				/* fall through */
-			case ';':
-				return 0x33;
-			case '"':
-				modifier = _BV(1); /* hold shift */
-				/* fall through */
-			case '\'':
-				return 0x34;
-			case '<':
-				modifier = _BV(1); /* hold shift */
-				/* fall through */
-			case ',':
-				return 0x36;
-			case '>':
-				modifier ^= _BV(1); /* hold shift */
-				/* fall through */
-			case '.':
-				return 0x37;
-			case '?':
-				modifier ^= _BV(1); /* hold shift */
-				/* fall through */
-			case '/':
-				return 0x38;
-			case ' ':
-				return 0x2C;
-			case '\t':
-				return 0x2B;
-			case '\n':
-				return 0x28;
-		}
-	}
-	return 0; /* char not found */
+	/* translate \t and \n */
+	if (ascii == '\t') return 0x2B;
+	if (ascii == '\n') return 0x28;
+	
+	/* char unknown */
+	return 0;
 }
 
 
@@ -232,13 +234,7 @@ void USBKeyboard::send_report(uint8_t keycode) {
 	if (keycode == 0x28) {
 		report_buffer[2] = 0x2C;
 		report_buffer[3] = 0x2A;
-		while (!usbInterruptIsReady()) usbPoll();
-		usbSetInterrupt(report_buffer, sizeof(report_buffer));
-		report_buffer[2] = 0x00;
-		report_buffer[3] = 0x00;
-		while (!usbInterruptIsReady()) usbPoll();
-		usbSetInterrupt(report_buffer, sizeof(report_buffer));
-		report_buffer[2] = keycode;
+		report_buffer[4] = 0x28;
 	}
 	usbSetInterrupt(report_buffer, sizeof(report_buffer)); /* send */
 	/* see http://vusb.wikidot.com/driver-api */
@@ -283,7 +279,7 @@ usbMsgLen_t usbFunctionSetup(uint8_t data[8]) {
 
 
 /* detect LED states (Caps Lock, Num Lock, Scroll Lcok) */
-usbMsgLen_t usbFunctionWrite(uint8_t * data, uchar len) {
+usbMsgLen_t usbFunctionWrite(uint8_t* data, uchar len) {
 	if (data[0] == LED_states) /* return, if no LED states have changed */
 		return 1;
 	if (data[0] ^ LED_states & 2) /* increase counter, if Caps Lock state changed */
