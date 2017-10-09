@@ -17,9 +17,8 @@
 #include <usbdrv.h>
 #include <Arduino.h>
 
-#define US 0
-#define DE 1
-#define KEYBOARD_LAYOUT DE
+#define LAYOUT_US 0
+#define LAYOUT_DE 1
 
 
 /* global variables */
@@ -28,6 +27,7 @@ static uint8_t idle_rate = 500 / 4; /* see HID1_11.pdf sect 7.2.4 */
 static uint8_t protocol_version = 0; /* see HID1_11.pdf sect 7.2.6 */
 volatile static uint8_t LED_states = 0; /* see HID1_11.pdf appendix B section 1 */
 volatile static uint8_t toggle_counter = 0; /* keep track of how many times caps lock have toggled */
+static uint8_t keyboard_layout = LAYOUT_US; /* keyboard layout, US layout by standard */
 
 
 class USBKeyboard : public Print {
@@ -36,6 +36,7 @@ public: /*#################### PUBLIC FUNCTIONS ####################*/
 	 * Constructor, call it when initializing the library
 	 ******************************************************/
 	USBKeyboard();
+	USBKeyboard(uint8_t layout);
 	
 	
 	/*******************************************************
@@ -48,8 +49,7 @@ public: /*#################### PUBLIC FUNCTIONS ####################*/
 	/*******************************************************
 	 * Type a single char to the USB host
 	 ******************************************************/
-	virtual size_t write(uint8_t ascii) {write(ascii, false);}
-	void write(char ascii, bool ignoreCapsLock);
+	virtual size_t write(uint8_t ascii);
 	
 	
 	/*******************************************************
@@ -75,7 +75,7 @@ private: /*################### PRIVATE FUNCTIONS ###################*/
 	 * Translate ASCII to appropriate keyboard report,
 	 * taking into consideration the status of caps lock
 	 ******************************************************/
-	uint8_t ASCII_to_keycode(char ascii, bool ignoreCapsLock);
+	uint8_t ASCII_to_keycode(char ascii);
 	
 	
 	/*******************************************************

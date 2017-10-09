@@ -21,3 +21,5 @@ isCapsLockActivated		KEYWORD2
 # Constants (LITERAL1)
 #######################################
 
+LAYOUT_US	LITERAL1
+LAYOUT_DE	LITERAL1
