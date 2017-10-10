@@ -59,7 +59,7 @@ const uint8_t keycodes[96][2] = {
 	{	0x27,	0x26	},		/*	)		*/
 	{	0x25,	0x30	},		/*	*		*/
 	{	0x2E,	0x30	},		/*	+		*/
-	{	0x36,	0x2E	},		/*	,		*/
+	{	0x36,	0x36	},		/*	,		*/
 	{	0x2D,	0x38	},		/*	-		*/
 	{	0x37,	0x37	},		/*	.		*/
 	{	0x38,	0x24	},		/*	/		*/
@@ -104,14 +104,14 @@ const uint8_t keycodes[96][2] = {
 	{	0x19,	0x19	},		/*	V		*/
 	{	0x1A,	0x1A	},		/*	W		*/
 	{	0x1B,	0x1B	},		/*	X		*/
-	{	0x1C,	0x1C	},		/*	Y		*/
-	{	0x1D,	0x1D	},		/*	Z		*/
+	{	0x1C,	0x1D	},		/*	Y		*/
+	{	0x1D,	0x1c	},		/*	Z		*/
 	{	0x2F,	0x25	},		/*	[		*/
 	{	0x31,	0x2E	},		/*	\		*/
 	{	0x30,	0x26	},		/*	]		*/
-	{	0x23,	0xC0	},		/*	^		*/
+	{	0x23,	0x35	},		/*	^		*/
 	{	0x2D,	0x38	},		/*	_		*/
-	{	0xC0,	0x2E	},		/*	`		*/
+	{	0x35,	0x2E	},		/*	`		*/
 	{	0x04,	0x04	},		/*	a		*/
 	{	0x05,	0x05	},		/*	b		*/
 	{	0x06,	0x06	},		/*	c		*/
@@ -136,12 +136,12 @@ const uint8_t keycodes[96][2] = {
 	{	0x19,	0x19	},		/*	v		*/
 	{	0x1A,	0x1A	},		/*	w		*/
 	{	0x1B,	0x1B	},		/*	x		*/
-	{	0x1C,	0x1C	},		/*	y		*/
-	{	0x1D,	0x1D	},		/*	z		*/
+	{	0x1C,	0x1D	},		/*	y		*/
+	{	0x1D,	0x1C	},		/*	z		*/
 	{	0x2F,	0x24	},		/*	{		*/
 	{	0x31,	0x31	},		/*	|		*/
 	{	0x30,	0x27	},		/*	}		*/
-	{	0xC0,	0x30	}		/*	~		*/
+	{	0x35,	0x30	}		/*	~		*/
 };
 
 
@@ -181,24 +181,23 @@ USBKeyboard::USBKeyboard() {
 }
 
 
+/* constructor */
 USBKeyboard::USBKeyboard(uint8_t layout) {
 	USBKeyboard::USBKeyboard();
 	keyboard_layout = layout;
 }
 
 
-/* make usbPoll() accessable within the library */
+/* make usbPoll() accessable from the outside */
 void USBKeyboard::update() {
 	usbPoll();
 }
 
 
-/* write single char */
-size_t USBKeyboard::write(uint8_t ascii) {
-	USBKeyboard::send_report(USBKeyboard::ASCII_to_keycode(ascii));
+void USBKeyboard::sendKey(uint8_t keycode) {
+	USBKeyboard::send_report(keycode);
 	modifier = 0x00;
 	USBKeyboard::send_report(0x00);
-	return 0;
 }
 
 
@@ -225,7 +224,7 @@ uint8_t USBKeyboard::ASCII_to_keycode(char ascii) {
 	if (ascii >= ' ' && ascii <= '~') {
 		if ((modifiers_shift[11][keyboard_layout] & 1) || (ascii >= 'a' && ascii <= 'z') || (ascii >= 'A' && ascii <= 'Z')) {
 			/* set shift depending on the Caps Lock state and input char */
-			modifier = LED_states ^ ((modifiers_shift[ascii/8 - 4][keyboard_layout] >> (7 - ((ascii - 32) % 8))) << 1 & 2);
+			modifier = (LED_states ^ ((modifiers_shift[ascii/8 - 4][keyboard_layout] >> (7 - ((ascii - 32) % 8))) << 1)) & 2;
 		}
 		else {
 			/* set shift depending on the input char */
