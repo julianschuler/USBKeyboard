@@ -22,7 +22,6 @@
 
 
 /* global variables */
-static uint8_t modifier = 0x00;
 static uint8_t idle_rate = 500 / 4; /* see HID1_11.pdf sect 7.2.4 */
 static uint8_t protocol_version = 0; /* see HID1_11.pdf sect 7.2.6 */
 volatile static uint8_t LED_states = 0; /* see HID1_11.pdf appendix B section 1 */
@@ -49,13 +48,34 @@ public: /*#################### PUBLIC FUNCTIONS ####################*/
 	/*******************************************************
 	 * Type a single char to the USB host
 	 ******************************************************/
-	virtual size_t write(uint8_t ascii) {sendKey(ASCII_to_keycode(ascii));}
+	virtual size_t write(uint8_t ascii) {sendKey(asciiToKeycode(ascii), asciiToShiftState(ascii));}
 	
 	
 	/*******************************************************
 	 * Send a single key to the USB host
 	 ******************************************************/
-	void sendKey(uint8_t keycode);
+	void sendKey(uint8_t keycode) {sendKey(keycode, 0);}
+	void sendKey(uint8_t keycode, uint8_t modifiers);
+	
+	
+	/*******************************************************
+	 * Send up to 6 keys to the USB host
+	 ******************************************************/
+	void sendKeys(uint8_t keycode1, uint8_t keycode2, uint8_t keycode3, uint8_t keycode4, uint8_t keycode5, uint8_t keycode6) {sendKeys(keycode1, keycode2, keycode3, keycode4, keycode5, keycode6, 0);}
+	void sendKeys(uint8_t keycode1, uint8_t keycode2, uint8_t keycode3, uint8_t keycode4, uint8_t keycode5, uint8_t keycode6, uint8_t modifiers);
+	
+	
+	/*******************************************************
+	 * Translate ASCII char to keycode
+	 ******************************************************/
+	uint8_t asciiToKeycode(char ascii);
+	
+	
+	/*******************************************************
+	 * Translate ASCII char to Shift state, taking into
+	 * consideration the status of Caps Lock
+	 ******************************************************/
+	uint8_t asciiToShiftState(char ascii);
 	
 	
 	/*******************************************************
@@ -78,16 +98,9 @@ public: /*#################### PUBLIC FUNCTIONS ####################*/
 	
 private: /*################### PRIVATE FUNCTIONS ###################*/
 	/*******************************************************
-	 * Translate ASCII to appropriate keyboard report,
-	 * taking into consideration the status of caps lock
-	 ******************************************************/
-	uint8_t ASCII_to_keycode(char ascii);
-	
-	
-	/*******************************************************
 	 * Send the keyboard report
 	 ******************************************************/
-	void send_report(uint8_t keycode);
+	void sendReport(uint8_t modifiers, uint8_t keycode1, uint8_t keycode2, uint8_t keycode3, uint8_t keycode4, uint8_t keycode5, uint8_t keycode6);
 };
 
 #endif /* __USBKeyboard_h__ */

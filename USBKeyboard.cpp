@@ -194,10 +194,58 @@ void USBKeyboard::update() {
 }
 
 
-void USBKeyboard::sendKey(uint8_t keycode) {
-	USBKeyboard::send_report(keycode);
-	modifier = 0x00;
-	USBKeyboard::send_report(0x00);
+/* send a single key */
+void USBKeyboard::sendKey(uint8_t keycode, uint8_t modifiers) {
+	/* make sure Enter/Return is send properly */
+	if (keycode == 0x28)
+		USBKeyboard::sendReport(0, 0x2C, 0x2A, 0x28, 0, 0, 0);
+	else
+		USBKeyboard::sendReport(modifiers, keycode, 0, 0, 0, 0, 0);
+	/* release all keys */
+	USBKeyboard::sendReport(0, 0, 0, 0, 0, 0, 0);
+}
+
+
+/* send up to 6 keys */
+void USBKeyboard::sendKeys(uint8_t keycode1, uint8_t keycode2, uint8_t keycode3, uint8_t keycode4, uint8_t keycode5, uint8_t keycode6, uint8_t modifiers) {
+	/* press keys */
+	USBKeyboard::sendReport(modifiers, keycode1, keycode2, keycode3, keycode4, keycode5, keycode6);
+	/* release all keys */
+	USBKeyboard::sendReport(0, 0, 0, 0, 0, 0, 0);
+}
+
+
+/* translate ASCII char to keycode */
+uint8_t USBKeyboard::asciiToKeycode(char ascii) {
+	/* check if input is valid ASCII char and translate it to keycode */
+	if (ascii >= ' ' && ascii <= '~')
+		return keycodes[ascii - 32][keyboard_layout];
+	
+	/* translate \t and \n */
+	if (ascii == '\t') return 0x2B;
+	if (ascii == '\n') return 0x28;
+	
+	/* char unknown */
+	return 0;
+}
+
+
+/* translate ASCII char to shift state */
+uint8_t USBKeyboard::asciiToShiftState(char ascii) {
+	/* check if input is valid ASCII char and translate it to keycode */
+	if (ascii >= ' ' && ascii <= '~') {
+		if ((modifiers_shift[11][keyboard_layout] & 1) || (ascii >= 'a' && ascii <= 'z') || (ascii >= 'A' && ascii <= 'Z')) {
+			/* set shift depending on the Caps Lock state and input char */
+			return (LED_states ^ ((modifiers_shift[ascii/8 - 4][keyboard_layout] >> (7 - ((ascii - 32) % 8))) << 1)) & 2;
+		}
+		else {
+			/* set shift depending on the input char */
+			return (modifiers_shift[ascii/8 - 4][keyboard_layout] >> (7 - ((ascii - 32) % 8))) << 1 & 2;
+		}
+	}
+	
+	/* char unknown or \t or \n, they need no Shift compensation for Caps Lock */
+	return 0;
 }
 
 
@@ -218,44 +266,17 @@ void USBKeyboard::resetCapsLockToggleCount() {
 
 /*#################################### PRIVATE FUNCTIONS #####################################*/
 
-/* translate ASCII char to keyboard report */
-uint8_t USBKeyboard::ASCII_to_keycode(char ascii) {
-	/* check if input is ASCII char and translate it to keycode */
-	if (ascii >= ' ' && ascii <= '~') {
-		if ((modifiers_shift[11][keyboard_layout] & 1) || (ascii >= 'a' && ascii <= 'z') || (ascii >= 'A' && ascii <= 'Z')) {
-			/* set shift depending on the Caps Lock state and input char */
-			modifier = (LED_states ^ ((modifiers_shift[ascii/8 - 4][keyboard_layout] >> (7 - ((ascii - 32) % 8))) << 1)) & 2;
-		}
-		else {
-			/* set shift depending on the input char */
-			modifier = (modifiers_shift[ascii/8 - 4][keyboard_layout] >> (7 - ((ascii - 32) % 8))) << 1 & 2;
-		}
-		return keycodes[ascii - 32][keyboard_layout];
-	}
-	
-	/* translate \t and \n */
-	if (ascii == '\t') return 0x2B;
-	if (ascii == '\n') return 0x28;
-	
-	/* char unknown */
-	return 0;
-}
-
-
 /* send the keyoard report */
-void USBKeyboard::send_report(uint8_t keycode) {
+void USBKeyboard::sendReport(uint8_t modifiers, uint8_t keycode1, uint8_t keycode2, uint8_t keycode3, uint8_t keycode4, uint8_t keycode5, uint8_t keycode6) {
 	/* perform usb background tasks until the report can be sent, then send it */
 	while (!usbInterruptIsReady()) usbPoll();
-	uint8_t report_buffer[8] = {modifier, 0, keycode, 0, 0, 0, 0, 0};
-	if (keycode == 0x28) {
-		report_buffer[2] = 0x2C;
-		report_buffer[3] = 0x2A;
-		report_buffer[4] = 0x28;
-	}
+	uint8_t report_buffer[8] = {modifiers, 0, keycode1, keycode2, keycode3, keycode4, keycode5, keycode6};
 	usbSetInterrupt(report_buffer, sizeof(report_buffer)); /* send */
 	/* see http://vusb.wikidot.com/driver-api */
 }
 
+
+/*##################################### V-USB FUNCTIONS ######################################*/
 
 /* declare the USB device as HID keyboard */
 usbMsgLen_t usbFunctionSetup(uint8_t data[8]) {
