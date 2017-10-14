@@ -17,8 +17,14 @@
 #include <usbdrv.h>
 #include <Arduino.h>
 
-#define LAYOUT_US 0
-#define LAYOUT_DE 1
+/* constants */
+#define LAYOUT_US 	0
+#define LAYOUT_DE 	1
+
+#define CONTROL		(1<<0)
+#define SHIFT 		(1<<1)
+#define ALT 		(1<<2)
+#define GUI			(1<<3)
 
 
 /* global variables */

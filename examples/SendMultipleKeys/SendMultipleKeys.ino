@@ -1,10 +1,11 @@
 /**************************************************************************
  *
- * File: CapsLockToggle.ino
+ * File: SendMultipleKeys.ino
  * Author: Julian Schuler (https://github.com/julianschuler)
  * License: GNU GPLv3, see LICENSE.txt
  * Description: This file is an example from the USBKeyboard library.
- *              It types in a message after hitting Caps Lock three times.
+ *              It sends "Win+D" and "Win+E" (for Windows: show Desktop
+ *				and open Explorer) after hitting Caps Lock three times.
  *
  *************************************************************************/
 
@@ -31,8 +32,9 @@ void loop() {
 		/* reset Caps Lock toggle counter */
 		mKeyboard.resetCapsLockToggleCount();
 		
-		/* type in a custom message */
-		mKeyboard.println("Hey, you have found Caps Lock on your keyboard!");
+		/* send the E and D keys together with the GUI key (for Windows: Win key)
+		 * available modifiers: CONTROL, SHIFT, ALT, GUI */
+		mKeyboard.sendKeys(mKeyboard.asciiToKeycode('D'), mKeyboard.asciiToKeycode('E'), 0, 0, 0, 0, GUI);
 	}
 	
 	/* due to the deactivation of the Timer0 interrupt, delay()
