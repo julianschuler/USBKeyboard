@@ -1,2 +1,13 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Let linguist ignore Assembly files by V-USB
+usbdrvasm.S linguist-vendored
+usbdrvasm.asm linguist-vendored
+usbdrvasm12.inc linguist-vendored
+usbdrvasm128.inc linguist-vendored
+usbdrvasm15.inc linguist-vendored
+usbdrvasm16.inc linguist-vendored
+usbdrvasm165.inc linguist-vendored
+usbdrvasm18-crc.inc linguist-vendored
+usbdrvasm20.inc linguist-vendored
