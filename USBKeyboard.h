@@ -54,7 +54,7 @@ public: /*#################### PUBLIC FUNCTIONS ####################*/
 	/*******************************************************
 	 * Type a single char to the USB host
 	 ******************************************************/
-	virtual size_t write(uint8_t ascii) {sendKey(asciiToKeycode(ascii), asciiToShiftState(ascii));}
+	virtual size_t write(uint8_t ascii);
 	
 	
 	/*******************************************************
