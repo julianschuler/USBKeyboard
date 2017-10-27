@@ -12,7 +12,7 @@
 PROGMEM const char usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH] = {
 	0x05, 0x01,			/* USAGE_PAGE (Generic Desktop)						*/
 	0x09, 0x06,			/* USAGE (Keyboard)									*/
-	0xa1, 0x01,			/* COLLECTION (Application)							*/
+	0xA1, 0x01,			/* COLLECTION (Application)							*/
 	0x75, 0x01,			/* REPORT_SIZE (1)									*/
 	0x95, 0x08,			/* REPORT_COUNT (8)									*/
 	0x05, 0x07,			/* USAGE_PAGE (Keyboard)(Key Codes)					*/

@@ -5,7 +5,7 @@
  * License: GNU GPLv3, see LICENSE.txt
  * Description: This file is an example from the USBKeyboard library.
  *              It sends "Win+D" and "Win+E" (for Windows: show Desktop
- *				and open Explorer) after hitting Caps Lock three times.
+ *              and open Explorer) after hitting Caps Lock three times.
  *
  *************************************************************************/
 
