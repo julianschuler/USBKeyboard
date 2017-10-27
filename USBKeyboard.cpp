@@ -194,6 +194,13 @@ void USBKeyboard::update() {
 }
 
 
+/* Type a single char to the USB host  */
+size_t USBKeyboard::write(uint8_t ascii) {
+	sendKey(asciiToKeycode(ascii), asciiToShiftState(ascii));
+	return 1; /* write successfull */
+}
+
+
 /* send a single key */
 void USBKeyboard::sendKey(uint8_t keycode, uint8_t modifiers) {
 	/* make sure Enter/Return is send properly */
