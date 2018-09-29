@@ -6,20 +6,20 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-USBKeyboard		KEYWORD1
+USBKeyboard	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 
-update						KEYWORD2
-write						KEYWORD2
-sendKey						KEYWORD2
-sendKeys					KEYWORD2
-asciiToKeycode				KEYWORD2
-asciiToShiftState			KEYWORD2
-isCapsLockActivated			KEYWORD2
-getCapsLockToggleCount		KEYWORD2
+update	KEYWORD2
+write	KEYWORD2
+sendKey	KEYWORD2
+sendKeys	KEYWORD2
+asciiToKeycode	KEYWORD2
+asciiToShiftState	KEYWORD2
+isCapsLockActivated	KEYWORD2
+getCapsLockToggleCount	KEYWORD2
 resetCapsLockToggleCount	KEYWORD2
 
 
@@ -29,7 +29,7 @@ resetCapsLockToggleCount	KEYWORD2
 
 LAYOUT_US	LITERAL1
 LAYOUT_DE	LITERAL1
-CONTROL		LITERAL1
-SHIFT		LITERAL1
-ALT			LITERAL1
-GUI			LITERAL1
+CONTROL	LITERAL1
+SHIFT	LITERAL1
+ALT	LITERAL1
+GUI	LITERAL1
