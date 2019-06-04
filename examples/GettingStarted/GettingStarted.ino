@@ -14,9 +14,12 @@
 /* connect a button to this pin and GND */
 #define BUTTON_PIN 7
 
-/* initialize class by creating object mKeyboard with US keyboard layout
- * currently available layouts: LAYOUT_US, LAYOUT_DE */
-USBKeyboard mKeyboard = USBKeyboard(LAYOUT_US);
+/* currently available layouts: LAYOUT_US, LAYOUT_DE */
+#define LAYOUT LAYOUT_US
+
+
+/* initialize class by creating object mKeyboard */
+USBKeyboard mKeyboard = USBKeyboard();
 
 bool lastButtonState = HIGH;
 bool lastCapsLockState;

@@ -16,15 +16,21 @@
 #include <string.h>
 #include <usbdrv.h>
 #include <Arduino.h>
+#include <keycodes.h>
 
 /* constants */
-#define LAYOUT_US 	0
-#define LAYOUT_DE 	1
+#define MODIFIER_CONTROL		(1<<0)
+#define MODIFIER_SHIFT 			(1<<1)
+#define MODIFIER_ALT 			(1<<2)
+#define MODIFIER_GUI			(1<<3)
 
-#define CONTROL		(1<<0)
-#define SHIFT 		(1<<1)
-#define ALT 		(1<<2)
-#define GUI			(1<<3)
+#ifndef LAYOUT
+	#define LAYOUT 				LAYOUT_US
+#endif
+
+/* makros */
+#define conc(a, b)				(a ## b)
+#define concat(a, b)			conc(a, b)
 
 
 /* global variables */
@@ -32,7 +38,7 @@ static uint8_t idle_rate = 500 / 4; /* see HID1_11.pdf sect 7.2.4 */
 static uint8_t protocol_version = 0; /* see HID1_11.pdf sect 7.2.6 */
 volatile static uint8_t LED_states = 0; /* see HID1_11.pdf appendix B section 1 */
 volatile static uint8_t toggle_counter = 0; /* keep track of how many times caps lock have toggled */
-static uint8_t keyboard_layout = LAYOUT_US; /* keyboard layout, US layout by standard */
+static uint8_t keyboard_layout = 0; /* keyboard layout, US layout by standard */
 
 
 class USBKeyboard : public Print {

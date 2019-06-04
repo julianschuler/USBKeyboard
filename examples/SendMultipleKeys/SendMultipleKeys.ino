@@ -12,9 +12,12 @@
 #include <USBKeyboard.h>
 
 
-/* initialize class by creating object mKeyboard with US keyboard layout
- * currently available layouts: LAYOUT_US, LAYOUT_DE */
-USBKeyboard mKeyboard = USBKeyboard(LAYOUT_US);
+/* currently available layouts: LAYOUT_US, LAYOUT_DE */
+#define LAYOUT LAYOUT_US
+
+
+/* initialize class by creating object mKeyboard */
+USBKeyboard mKeyboard = USBKeyboard();
 
 
 void setup() {
@@ -34,7 +37,7 @@ void loop() {
 		
 		/* send the E and D keys together with the GUI key (for Windows: Win key)
 		 * available modifiers: CONTROL, SHIFT, ALT, GUI */
-		mKeyboard.sendKeys(mKeyboard.asciiToKeycode('D'), mKeyboard.asciiToKeycode('E'), 0, 0, 0, 0, GUI);
+		mKeyboard.sendKeys(mKeyboard.asciiToKeycode('D'), mKeyboard.asciiToKeycode('E'), 0, 0, 0, 0, MODIFIER_GUI);
 	}
 	
 	/* due to the deactivation of the Timer0 interrupt, delay()

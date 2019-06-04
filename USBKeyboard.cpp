@@ -12,7 +12,7 @@
 PROGMEM const char usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH] = {
 	0x05, 0x01,			/* USAGE_PAGE (Generic Desktop)						*/
 	0x09, 0x06,			/* USAGE (Keyboard)									*/
-	0xA1, 0x01,			/* COLLECTION (Application)							*/
+	0xa1, 0x01,			/* COLLECTION (Application)							*/
 	0x75, 0x01,			/* REPORT_SIZE (1)									*/
 	0x95, 0x08,			/* REPORT_COUNT (8)									*/
 	0x05, 0x07,			/* USAGE_PAGE (Keyboard)(Key Codes)					*/
@@ -43,126 +43,6 @@ PROGMEM const char usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH] 
 	0x81, 0x00,			/* INPUT (Data,Ary,Abs)								*/
 	0xc0				/*  END_COLLECTION									*/
 };
-
-
-const uint8_t keycodes[96][2] = {
-	/* 	US		DE		*/
-	{	0x2C, 	0x2C	},		/*	Space 	*/
-	{	0x1E,	0x1E	},		/*	!		*/
-	{	0x34,	0x1F	},		/*	"		*/
-	{	0x20,	0x31	},		/*	#		*/
-	{	0x21,	0x21	},		/*	$		*/
-	{	0x22,	0x22	},		/*	%		*/
-	{	0x24,	0x23	},		/*	&		*/
-	{	0x34,	0x31	},		/*	'		*/
-	{	0x26,	0x25	},		/*	(		*/
-	{	0x27,	0x26	},		/*	)		*/
-	{	0x25,	0x30	},		/*	*		*/
-	{	0x2E,	0x30	},		/*	+		*/
-	{	0x36,	0x36	},		/*	,		*/
-	{	0x2D,	0x38	},		/*	-		*/
-	{	0x37,	0x37	},		/*	.		*/
-	{	0x38,	0x24	},		/*	/		*/
-	{	0x27,	0x27	},		/*	0		*/
-	{	0x1E,	0x1E	},		/*	1		*/
-	{	0x1F,	0x1F	},		/*	2		*/
-	{	0x20,	0x20	},		/*	3		*/
-	{	0x21,	0x21	},		/*	4		*/
-	{	0x22,	0x22	},		/*	5		*/
-	{	0x23,	0x23	},		/*	6		*/
-	{	0x24,	0x24	},		/*	7		*/
-	{	0x25,	0x25	},		/*	8		*/
-	{	0x26,	0x26	},		/*	9		*/
-	{	0x33,	0x37	},		/*	:		*/
-	{	0x33,	0x2E	},		/*	;		*/
-	{	0x36,	0x31	},		/*	<		*/
-	{	0x2E,	0x27	},		/*	=		*/
-	{	0x37,	0x31	},		/*	>		*/
-	{	0x38,	0x2E	},		/*	?		*/
-	{	0x1F,	0x14	},		/*	@		*/
-	{	0x04,	0x04	},		/*	A		*/
-	{	0x05,	0x05	},		/*	B		*/
-	{	0x06,	0x06	},		/*	C		*/
-	{	0x07,	0x07	},		/*	D		*/
-	{	0x08,	0x08	},		/*	E		*/
-	{	0x09,	0x09	},		/*	F		*/
-	{	0x0A,	0x0A	},		/*	G		*/
-	{	0x0B,	0x0B	},		/*	H		*/
-	{	0x0C,	0x0C	},		/*	I		*/
-	{	0x0D,	0x0D	},		/*	J		*/
-	{	0x0E,	0x0E	},		/*	K		*/
-	{	0x0F,	0x0F	},		/*	L		*/
-	{	0x10,	0x10	},		/*	M		*/
-	{	0x11,	0x11	},		/*	N		*/
-	{	0x12,	0x12	},		/*	O		*/
-	{	0x13,	0x13	},		/*	P		*/
-	{	0x14,	0x14	},		/*	Q		*/
-	{	0x15,	0x15	},		/*	R		*/
-	{	0x16,	0x16	},		/*	S		*/
-	{	0x17,	0x17	},		/*	T		*/
-	{	0x18,	0x18	},		/*	U		*/
-	{	0x19,	0x19	},		/*	V		*/
-	{	0x1A,	0x1A	},		/*	W		*/
-	{	0x1B,	0x1B	},		/*	X		*/
-	{	0x1C,	0x1D	},		/*	Y		*/
-	{	0x1D,	0x1c	},		/*	Z		*/
-	{	0x2F,	0x25	},		/*	[		*/
-	{	0x31,	0x2E	},		/*	\		*/
-	{	0x30,	0x26	},		/*	]		*/
-	{	0x23,	0x35	},		/*	^		*/
-	{	0x2D,	0x38	},		/*	_		*/
-	{	0x35,	0x2E	},		/*	`		*/
-	{	0x04,	0x04	},		/*	a		*/
-	{	0x05,	0x05	},		/*	b		*/
-	{	0x06,	0x06	},		/*	c		*/
-	{	0x07,	0x07	},		/*	d		*/
-	{	0x08,	0x08	},		/*	e		*/
-	{	0x09,	0x09	},		/*	f		*/
-	{	0x0A,	0x0A	},		/*	g		*/
-	{	0x0B,	0x0B	},		/*	h		*/
-	{	0x0C,	0x0C	},		/*	i		*/
-	{	0x0D,	0x0D	},		/*	j		*/
-	{	0x0E,	0x0E	},		/*	k		*/
-	{	0x0F,	0x0F	},		/*	l		*/
-	{	0x10,	0x10	},		/*	m		*/
-	{	0x11,	0x11	},		/*	n		*/
-	{	0x12,	0x12	},		/*	o		*/
-	{	0x13,	0x13	},		/*	p		*/
-	{	0x14,	0x14	},		/*	q		*/
-	{	0x15,	0x15	},		/*	r		*/
-	{	0x16,	0x16	},		/*	s		*/
-	{	0x17,	0x17	},		/*	t		*/
-	{	0x18,	0x18	},		/*	u		*/
-	{	0x19,	0x19	},		/*	v		*/
-	{	0x1A,	0x1A	},		/*	w		*/
-	{	0x1B,	0x1B	},		/*	x		*/
-	{	0x1C,	0x1D	},		/*	y		*/
-	{	0x1D,	0x1C	},		/*	z		*/
-	{	0x2F,	0x24	},		/*	{		*/
-	{	0x31,	0x31	},		/*	|		*/
-	{	0x30,	0x27	},		/*	}		*/
-	{	0x35,	0x30	}		/*	~		*/
-};
-
-
-const char modifiers_shift[12][2] = {	/* 	Bit:	1	2	3	4	5	6	7	8		*/
-	/* 	US			DE			*/		/* 	----------------------------------------- 	*/
-	{	B01111111,	B01101111	},		/*		Space	!	"	#	$	%	&	'		*/
-	{	B11110000,	B11100001	},		/*			(	)	*	+	,	-	.	/		*/
-	{	B00000000,	B00000000	},		/*			0	1	2	3	4	5	6	7		*/
-	{	B00101010,	B00110111	},		/*			8	9	:	;	<	=	>	?		*/
-	{	B11111111,	B01111111	},		/*			@	A	B	C	D	E	F	G		*/
-	{	B11111111,	B11111111	},		/*			H	I	J	K	L	M	N	O		*/
-	{	B11111111,	B11111111	},		/*			P	Q	R	S	T	U	V	W		*/
-	{	B11100011,	B11100001	},		/*			X	Y	Z	[	\	]	^	_		*/
-	{	B00000000,	B10000000	},		/*			`	a	b	c	d	e	f	g		*/
-	{	B00000000,	B00000000	},		/*			h	i	j	k	l	m	n	o		*/
-	{	B00000000,	B00000000	},		/*			p	q	r	s	t	u	v	w		*/
-	{	B00011110,	B00000001	}		/*			x	y	z	{	|	}	~	Lock	*/
-};
-	/*	The last bit, described as "Lock" above, tells about the function of the Caps	*
-	 *	Lock key for your OS and layout. 0 means Caps Lock (only letters toggled), 1	*
-	 *	means Shift Lock (all keys toggled). 											*/
 
 
 
@@ -226,7 +106,8 @@ void USBKeyboard::sendKeys(uint8_t keycode1, uint8_t keycode2, uint8_t keycode3,
 uint8_t USBKeyboard::asciiToKeycode(char ascii) {
 	/* check if input is valid ASCII char and translate it to keycode */
 	if (ascii >= ' ' && ascii <= '~')
-		return keycodes[ascii - 32][keyboard_layout];
+		//return keycodes[ascii - 32][keyboard_layout];
+		return concat(KEYCODES_, LAYOUT)[ascii - 32];
 	
 	/* translate \t and \n */
 	if (ascii == '\t') return 0x2B;
@@ -241,13 +122,13 @@ uint8_t USBKeyboard::asciiToKeycode(char ascii) {
 uint8_t USBKeyboard::asciiToShiftState(char ascii) {
 	/* check if input is valid ASCII char and translate it to keycode */
 	if (ascii >= ' ' && ascii <= '~') {
-		if ((modifiers_shift[11][keyboard_layout] & 1) || (ascii >= 'a' && ascii <= 'z') || (ascii >= 'A' && ascii <= 'Z')) {
+		if ((concat(MODIFIER_SHIFT_, LAYOUT)[11] & 1) || (ascii >= 'a' && ascii <= 'z') || (ascii >= 'A' && ascii <= 'Z')) {
 			/* set shift depending on the Caps Lock state and input char */
-			return (LED_states ^ ((modifiers_shift[ascii/8 - 4][keyboard_layout] >> (7 - ((ascii - 32) % 8))) << 1)) & 2;
+			return (LED_states ^ ((concat(MODIFIER_SHIFT_, LAYOUT)[ascii/8 - 4] >> (7 - ((ascii - 32) % 8))) << 1)) & 2;
 		}
 		else {
 			/* set shift depending on the input char */
-			return (modifiers_shift[ascii/8 - 4][keyboard_layout] >> (7 - ((ascii - 32) % 8))) << 1 & 2;
+			return (concat(MODIFIER_SHIFT_, LAYOUT)[ascii/8 - 4] >> (7 - ((ascii - 32) % 8))) << 1 & 2;
 		}
 	}
 	

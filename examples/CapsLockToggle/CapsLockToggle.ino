@@ -11,9 +11,12 @@
 #include <USBKeyboard.h>
 
 
-/* initialize class by creating object mKeyboard with US keyboard layout
- * currently available layouts: LAYOUT_US, LAYOUT_DE */
-USBKeyboard mKeyboard = USBKeyboard(LAYOUT_US);
+/* currently available layouts: LAYOUT_US, LAYOUT_DE */
+#define LAYOUT LAYOUT_US
+
+
+/* initialize class by creating object mKeyboard */
+USBKeyboard mKeyboard = USBKeyboard();
 
 
 void setup() {
