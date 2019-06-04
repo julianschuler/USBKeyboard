@@ -9,7 +9,7 @@ Open `File > Examples > USBKeyboard > USBKeyboard_GettingStarted` and upload it 
 Unplug your Arduino from your PC and plug in the USB connector. The keyboard should be recognized automatically by your PC, open a text editor of your choice and push the button afterwards, a message will be typed in.
 
 ## Schematic
-![Schematic](https://petrockblog.files.wordpress.com/2012/05/wpid-photo-19-05-2012-22201.jpg "Schematic for the Arduino UNO")
+[![Schematic](https://petrockblog.files.wordpress.com/2012/05/wpid-photo-19-05-2012-22201.jpg "Schematic for the Arduino UNO")](https://petrockblog.files.wordpress.com/2012/05/wpid-photo-19-05-2012-22201.jpg)
 
 You just need the zener diodes if your Arduino/AVR is running above 3.6V  
 (following the USB specification 3.6V is the maximum for D+ and D-).
