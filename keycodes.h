@@ -200,7 +200,7 @@ PROGMEM const uint8_t KEYCODES_LAYOUT_DE[96] = {
 };
 
 
-PROGMEM const char MODIFIER_SHIFT_LAYOUT_US[12] = {
+PROGMEM const uint8_t MODIFIER_SHIFT_LAYOUT_US[12] = {
 	B01111111,	/*		Space	!	"	#	$	%	&	'		*/
 	B11110000,	/*			(	)	*	+	,	-	.	/		*/
 	B00000000,	/*			0	1	2	3	4	5	6	7		*/
@@ -216,7 +216,7 @@ PROGMEM const char MODIFIER_SHIFT_LAYOUT_US[12] = {
 };
 
 
-PROGMEM const char MODIFIER_SHIFT_LAYOUT_DE[12] = {
+PROGMEM const uint8_t MODIFIER_SHIFT_LAYOUT_DE[12] = {
 	B01111111,	/*		Space	!	"	#	$	%	&	'		*/
 	B11100001,	/*			(	)	*	+	,	-	.	/		*/
 	B00000000,	/*			0	1	2	3	4	5	6	7		*/
