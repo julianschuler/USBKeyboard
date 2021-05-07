@@ -48,8 +48,7 @@ PROGMEM const uint8_t usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGT
 
 /*##################################### PUBLIC FUNCTIONS #####################################*/
 
-/* constructor */
-USBKeyboard::USBKeyboard() {
+void USBKeyboard::begin(uint8_t layout) {
 	cli();
 	USBOUT &= ~USBMASK;
 	USBDDR &= ~USBMASK;
@@ -58,15 +57,8 @@ USBKeyboard::USBKeyboard() {
 	usbDeviceConnect();
 	usbInit();
 	sei();
-}
-
-
-/* constructor */
-USBKeyboard::USBKeyboard(uint8_t layout) {
-	USBKeyboard::USBKeyboard();
 	keyboard_layout = layout;
 }
-
 
 /* make usbPoll() accessable from the outside */
 void USBKeyboard::update() {
