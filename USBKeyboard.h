@@ -43,12 +43,12 @@ static uint8_t keyboard_layout = 0; /* keyboard layout, US layout by standard */
 
 class USBKeyboard : public Print {
 public: /*#################### PUBLIC FUNCTIONS ####################*/
+	USBKeyboard() = default;
+
 	/*******************************************************
-	 * Constructor, call it when initializing the library
+	 * call it when initializing the library
 	 ******************************************************/
-	USBKeyboard();
-	USBKeyboard(uint8_t layout);
-	
+	void begin(uint8_t layout = 0);
 	
 	/*******************************************************
 	 * Call this function at least every 20ms,

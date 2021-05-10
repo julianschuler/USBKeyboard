@@ -9,7 +9,7 @@
 
 
 /* set USB HID report descriptor for boot protocol keyboard */
-PROGMEM const char usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH] = {
+PROGMEM const uint8_t usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH] = {
 	0x05, 0x01,			/* USAGE_PAGE (Generic Desktop)						*/
 	0x09, 0x06,			/* USAGE (Keyboard)									*/
 	0xa1, 0x01,			/* COLLECTION (Application)							*/
@@ -48,8 +48,7 @@ PROGMEM const char usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH] 
 
 /*##################################### PUBLIC FUNCTIONS #####################################*/
 
-/* constructor */
-USBKeyboard::USBKeyboard() {
+void USBKeyboard::begin(uint8_t layout) {
 	cli();
 	USBOUT &= ~USBMASK;
 	USBDDR &= ~USBMASK;
@@ -58,15 +57,8 @@ USBKeyboard::USBKeyboard() {
 	usbDeviceConnect();
 	usbInit();
 	sei();
-}
-
-
-/* constructor */
-USBKeyboard::USBKeyboard(uint8_t layout) {
-	USBKeyboard::USBKeyboard();
 	keyboard_layout = layout;
 }
-
 
 /* make usbPoll() accessable from the outside */
 void USBKeyboard::update() {
