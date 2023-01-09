@@ -15,13 +15,16 @@
 #define LAYOUT LAYOUT_US
 
 
-/* initialize class by creating object mKeyboard */
+/* create keyboard object mKeyboard */
 USBKeyboard mKeyboard = USBKeyboard();
 
 
 void setup() {
 	/* USB timing has to be exact, therefore deactivate Timer0 interrupt */
 	TIMSK0 = 0;
+
+	/* initialize the keyboard */
+	mKeyboard.begin()
 }
 
 
