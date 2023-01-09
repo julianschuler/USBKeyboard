@@ -18,7 +18,7 @@
 #define LAYOUT LAYOUT_US
 
 
-/* initialize class by creating object mKeyboard */
+/* create keyboard object mKeyboard */
 USBKeyboard mKeyboard = USBKeyboard();
 
 bool lastButtonState = HIGH;
@@ -28,6 +28,9 @@ bool lastCapsLockState;
 void setup() {
 	/* USB timing has to be exact, therefore deactivate Timer0 interrupt */
 	TIMSK0 = 0;
+
+	/* initialize the keyboard */
+	mKeyboard.begin()
 	
 	/* set the button pin as input and activate the internal pullup resistor */
 	pinMode(BUTTON_PIN, INPUT_PULLUP);
